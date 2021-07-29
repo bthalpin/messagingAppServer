@@ -17,6 +17,10 @@ const likes = require('./controllers/likes');
 const dislike = require('./controllers/dislike');
 const deletemessage = require('./controllers/deletemessage');
 const deletemail = require('./controllers/deletemail');
+const friendrequest = require('./controllers/friendrequest');
+const unfriend = require('./controllers/unfriend');
+const reject = require('./controllers/reject');
+const acceptfriend = require('./controllers/acceptfriend');
 
 const db = knex({
     client:'pg',
@@ -51,6 +55,10 @@ app.post('/friends',(req,res)=>friends.addFriends(req,res,db))
 app.post('/dislike',(req,res)=>dislike.removeLike(req,res,db))
 app.post('/deletemessage',(req,res)=>{deletemessage.deletePost(req,res,db)})
 app.post('/deletemail',(req,res)=>{deletemail.deletePost(req,res,db)})
+app.post('/friendrequest',(req,res)=>{friendrequest.addFriend(req,res,db)})
+app.post('/unfriend',(req,res)=>unfriend.removeFriend(req,res,db))
+app.post('/reject',(req,res)=>reject.rejectFriend(req,res,db))
+app.post('/acceptfriend',(req,res)=>acceptfriend.addFriend(req,res,db))
 
 app.listen('3000',()=>{
     console.log('app is running on port 3000')

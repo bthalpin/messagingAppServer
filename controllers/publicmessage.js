@@ -9,7 +9,7 @@ const postPublic = (req,res,db)=>{
             name:name,
             email:email,
             message:message,
-            time:JSON.stringify(time)
+            time:db.fn.now()
             
         })
         .then(data=>{
