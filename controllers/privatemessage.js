@@ -12,7 +12,7 @@ const sendMail = (req,res,db)=>{
             senderemail:senderemail,
             recipientemail:recipientemail,
             message:message,
-            time:time
+            time:db.fn.now()
             
         })
         .then(data=>{
