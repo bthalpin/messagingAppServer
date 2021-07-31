@@ -1,7 +1,7 @@
 const addLikes = (req,res,db) => {
-    const { email, id ,database } = req.body
-
-    if (!email || !id || !database){
+    const {name, email, id ,database } = req.body
+console.log(name, email, id ,database)
+    if (!name || !email || !id || !database){
         return res.status(400).json('Error Liking')
     }
 
@@ -9,7 +9,7 @@ const addLikes = (req,res,db) => {
     db('publicmessages')
         .where('id',id)
         .update({
-            likes:db.raw('array_append(likes,?)',[email.toUpperCase()])
+            likes:db.raw('array_append(likes,?)',[{'name':name,'email':email.toUpperCase()}])
         })
     
         .then(data=>{
@@ -30,7 +30,7 @@ const addLikes = (req,res,db) => {
         db('friendmessage')
         .where('id',id)
         .update({
-            likes:db.raw('array_append(likes,?)',[email.toUpperCase()])
+            likes:db.raw('array_append(likes,?)',[{'name':name,'email':email.toUpperCase()}])
         })
     
         .then(data=>{

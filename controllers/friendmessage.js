@@ -14,6 +14,7 @@ const postFriend = (req,res,db)=>{
             .then(data=>{
                 console.log('hello',data)
                 db('friendmessage').select('*')
+                .orderBy('id')
                 .then(message=>res.json(message))
                 .catch(err=>'NOPE')
         })

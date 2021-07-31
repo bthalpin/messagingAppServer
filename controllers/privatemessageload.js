@@ -5,6 +5,7 @@ const load = (req,res,db)=>{
     .where('senderemail',email)
     .orWhere('recipientemail',email.toUpperCase())
     .select('*')
+    .orderBy('id')
     .then(data=>
         res.json(data))
         .catch(err=>console.log(err))

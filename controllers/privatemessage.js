@@ -17,7 +17,11 @@ const sendMail = (req,res,db)=>{
         })
         .then(data=>{
             console.log('hello',data)
-            db('privatemessage').select('*')
+            db('privatemessage')
+            .where('senderemail',senderemail)
+            .orWhere('recipientemail',senderemail.toUpperCase())
+            .select('*')
+            .orderBy('id')
             .then(message=>res.json(message))
             .catch(err=>'NOPE')
     })
