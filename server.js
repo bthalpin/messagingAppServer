@@ -24,12 +24,12 @@ const acceptfriend = require('./controllers/acceptfriend');
 
 const db = knex({
     client:'pg',
-    connection:{
-        host:'127.0.0.1',
-        user:'postgres',
-        password:'testing',
-        database:'social'
-    }
+    connection: {
+        connectionString : process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+   }
 })
 const app = express();
 
@@ -60,6 +60,7 @@ app.post('/unfriend',(req,res)=>unfriend.removeFriend(req,res,db))
 app.post('/reject',(req,res)=>reject.rejectFriend(req,res,db))
 app.post('/acceptfriend',(req,res)=>acceptfriend.addFriend(req,res,db))
 
-app.listen('3000',()=>{
-    console.log('app is running on port 3000')
+const PORT = process.env.PORT;
+app.listen(PORT, ()=>{
+    console.log(`app is running on port ${PORT}`);
 })
