@@ -24,11 +24,14 @@ const acceptfriend = require('./controllers/acceptfriend');
 
 const db = knex({
     client:'pg',
-    connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-})
+    connection: {
+        connectionString : process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+        timezone:'UTC'
+   }
+});
 const app = express();
 
 app.use(express.json())
