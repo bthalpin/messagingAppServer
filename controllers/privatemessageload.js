@@ -1,4 +1,5 @@
 const load = (req,res,db)=>{
+    
     const {email,friends}=req.body
 
     db('privatemessage')

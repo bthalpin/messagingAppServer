@@ -1,10 +1,10 @@
-const postFriend = (req,res,db)=>{
-    const {name, email, message,time} = req.body;
+const postFriend = (data,db,io)=>{
+    const {name, email, message,time} = data;
     if (!name || !email || !message){
-        return res.status(400).json('Incorrect form of submission');
+        // return json.send('Incorrect form of submission');
     }
     
-        console.log(name,email,message,time)
+        // console.log(name,email,message,time)
         db('friendmessage').insert({
             name:name,
             email:email,
@@ -12,10 +12,10 @@ const postFriend = (req,res,db)=>{
             time:db.fn.now()
         })
             .then(data=>{
-                console.log('hello',data)
+                // console.log('hello',data)
                 db('friendmessage').select('*')
                 .orderBy('id')
-                .then(message=>res.json(message))
+                .then(message=>io.emit('friendmessage',message))
                 .catch(err=>'NOPE')
         })
     

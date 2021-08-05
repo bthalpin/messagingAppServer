@@ -1,9 +1,9 @@
-const removeLike = (req,res,db) =>{
-    const {name,email,id,database} = req.body
+const removeLike = (data,db,io) =>{
+    const {name,email,id,database} = data
     if (!name || !email || !id || !database){
-        return res.status(400).json('Error Liking')
+        // return res.status(400).json('Error Liking')
     }
-    console.log('remove')
+    // console.log('remove')
     database === 'publicmessages'?
     db('publicmessages')
         .where('id',id)
@@ -12,12 +12,12 @@ const removeLike = (req,res,db) =>{
         })
     
         .then(data=>{
-            console.log('hello',data)
+            // console.log('hello',data)
             db('publicmessages')
             .select('*')
             .orderBy('id')
             
-            .then(message=>res.json(message))
+            .then(message=>io.emit('publicdislike',message))
             .catch(err=>'NOPE')
     })
 
@@ -33,12 +33,12 @@ const removeLike = (req,res,db) =>{
         })
     
         .then(data=>{
-            console.log('hello',data)
+            // console.log('hello',data)
             db('friendmessage')
             .select('*')
             .orderBy('id')
             
-            .then(message=>res.json(message))
+            .then(message=>io.emit('frienddislike',message))
             .catch(err=>'NOPE')
     })
 

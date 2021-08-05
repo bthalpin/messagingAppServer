@@ -1,5 +1,5 @@
-const addFriends = (req,res,db)=>{
-    const { email, newFriend} = req.body;
+const addFriends = (data,db,io)=>{
+    const { email, newFriend} = data;
     if ( !email || !newFriend){
         return res.status(400).json('Incorrect form of submission');
     }
@@ -12,12 +12,12 @@ const addFriends = (req,res,db)=>{
             })
         
             .then(data=>{
-                console.log('hello',data)
+                // console.log('hello',data)
                 db('users')
                 .where('email',email)
                 .select('friends')
                 
-                .then(message=>res.json(message))
+                .then(message=>io.emit('friends',message))
                 .catch(err=>'NOPE')
         })
     

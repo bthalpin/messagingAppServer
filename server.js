@@ -1,7 +1,18 @@
 const express = require('express');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+// const { Server } = require('socket.io');
+// const io = new Server(server);
 const bcrypt = require('bcrypt');
 const cors = require('cors');
 const knex = require('knex');
+const io = require('socket.io')(server,{
+    cors:{
+        origin:'http://localhost:3006',
+        methods:["GET","POST"]
+    },
+});
 
 
 const register = require('./controllers/register');
@@ -21,6 +32,7 @@ const friendrequest = require('./controllers/friendrequest');
 const unfriend = require('./controllers/unfriend');
 const reject = require('./controllers/reject');
 const acceptfriend = require('./controllers/acceptfriend');
+const update = require('./controllers/update');
 
 const db = knex({
     client:'pg',
@@ -32,7 +44,17 @@ const db = knex({
         timezone:'UTC'
    }
 });
-const app = express();
+
+// const db = knex({
+//     client:'pg',
+//     connection: {
+//             host: '127.0.0.1',
+//             user: 'postgres',
+//             password: 'testing',
+//             database: 'social'
+        
+//     }
+// })
 
 app.use(express.json())
 
@@ -42,6 +64,72 @@ app.get('/',(req,res)=>{
     res.send('woo')
 })
 
+// io.use((socket,next)=>{
+//     const username = socket.handshake.auth.username;
+//     if (!username) {
+//         return next(new Error('invalid username'))
+//     }
+//     socket.username = username;
+//     next();
+// })
+
+io.on('connection',(socket)=>{
+    
+    console.log('a user connected')
+    
+    socket.on('disconnect',()=>{
+        console.log('user disconnected')
+    })
+    socket.on('privatemessage',(data)=>{
+        privatemessage.sendMail(data,db,io)
+        console.log('recieved')
+    })
+    socket.on('publicmessage',(data)=>{
+        publicmessage.postPublic(data,db,io)
+    })
+    socket.on('friendmessage',(data)=>{
+        friendmessage.postFriend(data,db,io)
+    })
+    socket.on('likes',data=>{
+        likes.addLikes(data,db,io)
+    })
+    socket.on('friends',data=>{
+        friends.addFriends(data,db,io)
+    })
+    socket.on('dislike',data=>{
+        dislike.removeLike(data,db,io)
+    })
+    socket.on('deletemessage',data=>{
+        deletemessage.deletePost(data,db,io)
+    })
+    socket.on('deletemail',data=>{
+        deletemail.deletePost(data,db,io)
+    })
+    socket.on('friendrequest',data=>{
+        friendrequest.addFriend(data,db,io)
+    })
+    socket.on('unfriend',data=>{
+        unfriend.removeFriend(data,db,io)
+    })
+    socket.on('reject',data=>{
+        reject.rejectFriend(data,db,io)
+    })
+    socket.on('acceptfriend',data=>{
+        acceptfriend.addFriend(data,db,io)
+    })
+    // socket.on('update',data=>{
+        // update.updateUser(data,db,io)
+    // })
+
+    // const users = [];
+    // for (let [id, socket] of io.of('/').sockets){
+    //     user.push({
+    //         userID:id,
+    //         username:socket.username,
+    //     });
+    // }
+    // socket.emit('users',users);
+})
 
 app.post('/register',(req,res)=>{register.handleRegister(req,res,db,bcrypt)})
 app.post('/signin',(req,res)=>{signin.handleSignIn(req,res,db,bcrypt)})
@@ -56,12 +144,13 @@ app.post('/friends',(req,res)=>friends.addFriends(req,res,db))
 app.post('/dislike',(req,res)=>dislike.removeLike(req,res,db))
 app.post('/deletemessage',(req,res)=>{deletemessage.deletePost(req,res,db)})
 app.post('/deletemail',(req,res)=>{deletemail.deletePost(req,res,db)})
-app.post('/friendrequest',(req,res)=>{friendrequest.addFriend(req,res,db)})
-app.post('/unfriend',(req,res)=>unfriend.removeFriend(req,res,db))
-app.post('/reject',(req,res)=>reject.rejectFriend(req,res,db))
-app.post('/acceptfriend',(req,res)=>acceptfriend.addFriend(req,res,db))
+app.post('/friendrequest',(req,res)=>{friendrequest.addFriend(req,res,db,io)})
+app.post('/unfriend',(req,res)=>unfriend.removeFriend(req,res,db,io))
+app.post('/reject',(req,res)=>reject.rejectFriend(req,res,db,io))
+app.post('/acceptfriend',(req,res)=>acceptfriend.addFriend(req,res,db,io))
+// app.post('/update',(req,res)=>update.updateUser(req,res,db))
 
 const PORT = process.env.PORT;
-app.listen(PORT, ()=>{
+server.listen(PORT, ()=>{
     console.log(`app is running on port ${PORT}`);
 })

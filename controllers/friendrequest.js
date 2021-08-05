@@ -1,5 +1,6 @@
-const addFriend = (req,res,db)=>{
+const addFriend = (req,res,db,io)=>{
     const { email, newFriend} = req.body;
+    // console.log(req.body)
     if ( !email || !newFriend){
         return res.status(400).json('Incorrect form of submission');
     }
@@ -20,7 +21,7 @@ const addFriend = (req,res,db)=>{
                             })
                             
                             .then(data=>{
-                                console.log('sent')
+                                res.json(data)
                                     
                                 
                         db('users')
@@ -32,16 +33,30 @@ const addFriend = (req,res,db)=>{
                                 .then(data=>{
                                     db('users')
                                     .where('email',email)
-                                    .select('pendingrequests')
+                                    .select('*')
                                     
-                                    .then(users=>res.json(users[0]))
+                                    .then(users=>{
+                                        // console.log(users)
+                                        io.emit('friendrequest',users)})
                                     .catch(err=>'NOPE')
                                 })
+                                .then(data=>{
+                                    db('users')
+                                    .where('email',newFriend)
+                                    .select('*')
+                                    
+                                    .then(users=>{
+                                        // console.log(users)
+                                        io.emit('friendrequest',users)})
+                                    .catch(err=>'NOPE')
+                                }
+
+                                )
                             }).catch(err => res.status(400).json('Unable to post'))
                         }
             })
             })
-        console.log('request')
+        // console.log('request')
         
         
                     

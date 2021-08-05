@@ -1,7 +1,7 @@
-const deletePost = (req,res,db) =>{
-    const {id,database} = req.body
+const deletePost = (data,db,io) =>{
+    const {id,database} = data
     if (!id || !database){
-        return res.status(400).json('Error Deleting')
+        // return res.status(400).json('Error Deleting')
     }
 
     
@@ -12,12 +12,12 @@ const deletePost = (req,res,db) =>{
     
     
         .then(data=>{
-            console.log('hello',data)
+            // console.log('hello',data)
             db('privatemessage')
             .select('*')
             .orderBy('id')
             
-            .then(message=>res.json(message))
+            .then(message=>io.emit('deletemail',message))
             .catch(err=>'NOPE')
     })
 

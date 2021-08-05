@@ -1,10 +1,10 @@
-const postPublic = (req,res,db)=>{
-    const {name, email, message,time} = req.body;
+const postPublic = (data,db,io)=>{
+    const {name, email, message,time} = data;
     if (!name || !email || !message){
-        return res.status(400).json('Incorrect form of submission');
+        // return res.status(400).json('Incorrect form of submission');
     }
     
-        console.log(time)
+        // console.log(time)
         db('publicmessages').insert({
             name:name,
             email:email,
@@ -13,10 +13,10 @@ const postPublic = (req,res,db)=>{
             
         })
         .then(data=>{
-            console.log('hello',data)
+            // console.log('hello',data)
             db('publicmessages').select('*')
             .orderBy('id')
-            .then(message=>res.json(message))
+            .then(message=>io.emit('publicmessage',message))
             .catch(err=>'NOPE')
     })
     .catch(err => res.status(400).json('Unable to post'))

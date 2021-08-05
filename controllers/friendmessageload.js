@@ -4,7 +4,7 @@ const load = (req,res,db)=>{
     db('friendmessage').select('*')
     .orderBy('id')
     .then(data=>{
-        console.log(data)
+        // console.log(data)
         res.json(data)})
         
         .catch(err=>console.log(err))

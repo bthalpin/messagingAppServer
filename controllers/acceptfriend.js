@@ -1,4 +1,4 @@
-const addFriend = (req,res,db)=>{
+const addFriend = (req,res,db,io)=>{
     const { email, friend} = req.body;
     if ( !email || !friend){
         return res.status(400).json('Incorrect form of submission');
@@ -12,7 +12,7 @@ const addFriend = (req,res,db)=>{
     })
 
     .then(data=>{
-        console.log('hello',data)
+        res.json(data)
         // db('users')
         // .where('email',email)
         // .select('requests')
@@ -32,7 +32,7 @@ db('users')
     })
 
     .then(data=>{
-        console.log('deleted')
+        // console.log('deleted')
         
 })
 
@@ -47,12 +47,12 @@ db('users')
             })
         
             .then(data=>{
-                console.log('hello',data)
+                // console.log('hello',data)
                 db('users')
                 .where('email',email)
                 .select('*')
                 
-                .then(user=>res.json(user))
+                .then(user=>io.emit('acceptfriend',user))
                 .catch(err=>'NOPE')
         })
     
@@ -70,8 +70,13 @@ db('users')
             })
         
             .then(data=>{
-                console.log('added')
+                // console.log('added')
+                db('users')
+                .where('email',friend)
+                .select('*')
                 
+                .then(user=>io.emit('acceptfriend',user))
+                .catch(err=>'NOPE')
         })
     
     

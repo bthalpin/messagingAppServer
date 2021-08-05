@@ -1,8 +1,8 @@
-const addLikes = (req,res,db) => {
-    const {name, email, id ,database } = req.body
-console.log(name, email, id ,database)
+const addLikes = (data,db,io) => {
+    const {name, email, id ,database } = data
+// console.log(name, email, id ,database)
     if (!name || !email || !id || !database){
-        return res.status(400).json('Error Liking')
+        // return res.status(400).json('Error Liking')
     }
 
     database === 'publicmessages'?
@@ -13,12 +13,12 @@ console.log(name, email, id ,database)
         })
     
         .then(data=>{
-            console.log('hello',data)
+            // console.log('hello',data)
             db('publicmessages')
             .select('*')
             .orderBy('id')
             
-            .then(message=>res.json(message))
+            .then(message=>io.emit('publiclikes',message))
             .catch(err=>'NOPE')
     })
 
@@ -34,12 +34,12 @@ console.log(name, email, id ,database)
         })
     
         .then(data=>{
-            console.log('hello',data)
+            // console.log('hello',data)
             db('friendmessage')
             .select('*')
             .orderBy('id')
             
-            .then(message=>res.json(message))
+            .then(message=>io.emit('friendlikes',message))
             .catch(err=>'NOPE')
     })
 

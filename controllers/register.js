@@ -1,11 +1,14 @@
 const handleRegister = (req,res,db,bcrypt)=>{
     const {name, email, password,friends} = req.body;
-    console.log(name,email,password)
+    // console.log(name,email,password)
     if (!name || !email || !password || !friends){
         return res.status(400).json('Incorrect form of submission');
     }
+   
+
+   
     const hash = bcrypt.hash(password,10).then(function(hash){
-        console.log(hash,name,email)
+        // console.log(hash,name,email)
     db.transaction(trx =>{
     
         trx.insert({
@@ -28,12 +31,16 @@ const handleRegister = (req,res,db,bcrypt)=>{
             })
         })
         .then(trx.commit)
-        .catch(trx.rollback)
+        .catch(()=>{
+            trx.rollback
+            res.json('TAKEN')
+        })
     })
     })
     
     .catch(err => res.status(400).json('Unable to register'))
-    }
+    
+}
 
 
 
