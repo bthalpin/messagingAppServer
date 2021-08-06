@@ -13,7 +13,7 @@ const sendMail = (data,db,io)=>{
             senderemail:senderemail,
             recipientemail:recipientemail,
             message:message,
-            time:db.fn.now()
+            time:time
             
         })
         .then(data=>{

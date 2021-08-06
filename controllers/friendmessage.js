@@ -9,7 +9,7 @@ const postFriend = (data,db,io)=>{
             name:name,
             email:email,
             message:message,
-            time:db.fn.now()
+            time:time
         })
             .then(data=>{
                 // console.log('hello',data)
