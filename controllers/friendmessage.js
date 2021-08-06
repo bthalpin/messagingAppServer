@@ -4,7 +4,6 @@ const postFriend = (data,db,io)=>{
         // return json.send('Incorrect form of submission');
     }
     
-        console.log(name,email,message,time)
         db('friendmessage').insert({
             name:name,
             email:email,
@@ -12,7 +11,6 @@ const postFriend = (data,db,io)=>{
             time:time
         })
             .then(data=>{
-                // console.log('hello',data)
                 db('friendmessage').select('*')
                 .orderBy('id')
                 .then(message=>io.emit('friendmessage',message))
