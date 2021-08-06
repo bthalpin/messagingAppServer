@@ -4,7 +4,7 @@ const postFriend = (data,db,io)=>{
         // return json.send('Incorrect form of submission');
     }
     
-        // console.log(name,email,message,time)
+        console.log(name,email,message,time)
         db('friendmessage').insert({
             name:name,
             email:email,
