@@ -4,7 +4,7 @@ const postPublic = (data,db,io)=>{
         // return res.status(400).json('Incorrect form of submission');
     }
     
-        // console.log(time)
+        if(time){console.log(time)}
         db('publicmessages').insert({
             name:name,
             email:email,
