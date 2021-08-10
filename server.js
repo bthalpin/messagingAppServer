@@ -9,7 +9,7 @@ const cors = require('cors');
 const knex = require('knex');
 const io = require('socket.io')(server,{
     cors:{
-        origin:'https://bthalpin.github.io',
+        origin:'http://localhost:3006',
         methods:["GET","POST"]
     },
 });
@@ -32,7 +32,8 @@ const friendrequest = require('./controllers/friendrequest');
 const unfriend = require('./controllers/unfriend');
 const reject = require('./controllers/reject');
 const acceptfriend = require('./controllers/acceptfriend');
-const update = require('./controllers/update');
+const updateRead = require('./controllers/updateRead');
+const read = require('./controllers/read');
 
 const db = knex({
     client:'pg',
@@ -82,7 +83,7 @@ io.on('connection',(socket)=>{
     })
     socket.on('privatemessage',(data)=>{
         privatemessage.sendMail(data,db,io)
-        console.log('recieved')
+        // console.log('recieved')
     })
     socket.on('publicmessage',(data)=>{
         publicmessage.postPublic(data,db,io)
@@ -117,9 +118,12 @@ io.on('connection',(socket)=>{
     socket.on('acceptfriend',data=>{
         acceptfriend.addFriend(data,db,io)
     })
-    // socket.on('update',data=>{
-        // update.updateUser(data,db,io)
-    // })
+    socket.on('read',data=>{
+        read.markRead(data,db,io)
+    })
+    socket.on('loadRead',data=>{
+        updateRead.loadReadStatus(data,db,io)
+    })
 
     // const users = [];
     // for (let [id, socket] of io.of('/').sockets){

@@ -52,7 +52,7 @@ db('users')
                 .where('email',email)
                 .select('*')
                 
-                .then(user=>io.emit('acceptfriend',user))
+                .then(user=>io.emit('acceptfriend',{user:user,friend:friend}))
                 .catch(err=>'NOPE')
         })
     
@@ -75,10 +75,19 @@ db('users')
                 .where('email',friend)
                 .select('*')
                 
-                .then(user=>io.emit('acceptfriend',user))
+                .then(user=>io.emit('acceptfriend',{user:user,friend:email}))
                 .catch(err=>'NOPE')
         })
-    
+        .then(
+            
+        )
+        db('totalmessages')
+        .insert([{senderemail:email,recipientemail:friend,total:0,read:0},{senderemail:friend,recipientemail:email,total:0,read:0}])
+        .then(
+           
+        )
+        
+        
     
     
     

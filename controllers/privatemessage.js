@@ -25,11 +25,24 @@ const sendMail = (data,db,io)=>{
             .orderBy('id')
             .then(message=>{
                 // console.log('sending')
-                io.emit('privatemessage',message)})
-            .catch(err=>'NOPE')
+                io.emit('privatemessage',{message:message,recipientemail:recipientemail,senderemail:senderemail})})
+                .catch(err=>'NOPE')
     })
     .catch(err => res.status(400).json('Unable to post'))
-        
+    db('totalmessages')
+    .where('senderemail',senderemail)
+    .andWhere('recipientemail',recipientemail)
+    .update({'total':db.raw(['total+1'])})
+    .then(data)
+    .then(
+        db('totalmessages')
+        .where('recipientemail',recipientemail)
+                .select('*')
+                .then(data)
+                    // console.log('new',data)}
+                    // io.emit('updateReadStatus',data)}
+                    
+    )
     
 }
 
