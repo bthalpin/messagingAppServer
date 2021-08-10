@@ -9,7 +9,7 @@ const cors = require('cors');
 const knex = require('knex');
 const io = require('socket.io')(server,{
     cors:{
-        origin:'http://localhost:3006',
+        origin:'https://bthalpin.github.io',
         methods:["GET","POST"]
     },
 });
